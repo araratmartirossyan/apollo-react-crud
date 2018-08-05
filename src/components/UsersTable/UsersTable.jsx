@@ -1,27 +1,13 @@
 import React, { Component } from 'react'
 import { Table, Button } from 'react-bootstrap'
-import { Query, graphql, compose } from 'react-apollo'
-import { gql } from 'apollo-boost'
-import deleteUserMutation from '../../graphql/UserDeleteMutation'
+import { Link } from 'react-router-dom'
 
 import { tableHeading } from './users.mock'
 
-const usersQuery = gql`
-  {
-    allUsers {
-      id
-      name
-      age
-      job
-    }
-  }
-`;
-
-class UsersTable extends Component {
-  handleEdit = () => {}
+export default class UsersTable extends Component {
  
   handleRemove = id => () =>
-    this.props.submit(id)
+    this.props.removeUser(id)
 
   renderTh = ({ title }, key) =>
     <th key={key}>{title}</th>
@@ -30,51 +16,38 @@ class UsersTable extends Component {
     <td key={key}>{item}</td>
 
   render() {
+    const { users = [] } = this.props
+    console.log(this.props)
     return (
-      <Query query={usersQuery} pollInterval={500}>
-        {({ loading, data: { allUsers } }) => {
-          if (loading) {
-            return null
-          }
-
-          return (
-            <Table responsive>
-              <thead>
-                <tr>
-                  {tableHeading.map(
-                    (item, key) => this.renderTh(item, key)
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {allUsers.map((item, index) =>
-                  <tr key={index}>
-                    {Object.values(item)
-                      .map(
-                        (subItem, key) => this.renderTd(subItem, key)
-                    )}
-                    <th>
-                      <Button onClick={this.handleRemove(item.id)}> Remove </Button>
-                      <Button onClick={this.handleEdit(item.id)}> Edit </Button>
-                    </th>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-          )
-        }}
-      </Query>
+      <Table responsive>
+        <thead>
+          <tr>
+            {tableHeading.map(
+              (item, key) => this.renderTh(item, key)
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((item, index) =>
+            <tr key={index}>
+              {Object.values(item)
+                .map(
+                  (subItem, key) => this.renderTd(subItem, key)
+                )
+              }
+              <th>
+                <Button
+                  onClick={this.handleRemove(item.id)}
+                  bsStyle='danger'
+                >
+                  Remove
+                </Button>
+                <Link to={`/edit/${item.id}`}> Edit </Link>
+              </th>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     )
   }
 }
-
-export default compose(
-  graphql(deleteUserMutation, {
-    props: ({ mutate }) => ({
-      submit: id =>
-        mutate({
-          variables: { id }
-        })
-    })
-  })
-)(UsersTable)

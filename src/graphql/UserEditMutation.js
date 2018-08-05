@@ -1,5 +1,5 @@
 
-import { gql } from 'react-apollo';
+import gql from 'graphql-tag'
 
 export default gql`
 	mutation userUpdateMutation($id: ID!, $name: String! $job: String! $age: Int!) {

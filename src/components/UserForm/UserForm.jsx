@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { bool, func } from 'prop-types'
-import { graphql, compose } from 'react-apollo'
+import { object, func } from 'prop-types'
 import {
   FormGroup,
   ControlLabel,
@@ -9,13 +8,24 @@ import {
 } from 'react-bootstrap'
 import { convertingTypes } from '../../utils/convertingTypes'
 import { inputs } from './mock'
-import userNewMutation from '../../graphql/UserAddMutation'
 
 class UserForm extends Component {
   state = {
     name: '',
     age: 0,
     job: ''
+  }
+
+  componentWillMount() {
+    const { user } = this.props
+    if (user) {
+      Object.keys(user)
+        .map(item =>
+          this.setState({
+            [item]: user[item]
+          })
+        )
+    }
   }
 
   handleSubmit = () =>
@@ -56,22 +66,13 @@ class UserForm extends Component {
 }
 
 UserForm.propTypes = {
-  isFormOpen: bool,
+  user: object,
   submit: func
 }
 
 UserForm.defaultProps = {
-  isFormOpen: false,
+  user: {},
   submit: () => {}
 }
 
-export default compose(
-  graphql(userNewMutation, {
-    props: ({ mutate }) => ({
-      submit: ({ userInput }) =>
-        mutate({
-          variables: userInput
-        })
-    })
-  })
-)(UserForm)
+export default UserForm

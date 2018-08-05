@@ -1,41 +1,25 @@
 import React, { Component } from 'react'
-import { Grid, Button } from 'react-bootstrap'
-import UsersTable from '../../components/UsersTable'
-import UserForm from '../../components/UserForm'
+import { Route } from 'react-router-dom'
+import { Grid, Jumbotron } from 'react-bootstrap'
+import UsersList from '../UsersList'
+import UsersAdd from '../UsersAdd'
+import UsersEdit from '../UsersEdit'
 
-import './Main.css'
+const TITLE = 'Simple Apollo Crud'
 
 export default class Main extends Component {
-  state = {
-    isFormOpen: false
-  }
-
-  handleCreateUser = () =>
-    this.setState({
-      isFormOpen: !this.state.isFormOpen
-    })
-
+ 
   render() {
-    const { isFormOpen } = this.state
-    const buttonText = isFormOpen ? 'Close form' : 'Add new character'
 
     return (
-      <div className='container'>
-        <Grid>
-          <div className='main'>
-            <div className='main-header'>
-              <Button
-                bsStyle='primary'
-                onClick={this.handleCreateUser}
-              >
-                {buttonText}
-              </Button>
-            </div>
-            {isFormOpen && <UserForm />}
-            <UsersTable />
-          </div>
-        </Grid>
-      </div>
+      <Grid>
+        <Jumbotron>
+          <h1>{TITLE}</h1>
+          <Route path="/list" component={UsersList} />
+          <Route path="/add" component={UsersAdd} />
+          <Route path="/edit/:id" component={UsersEdit} />
+        </Jumbotron>
+      </Grid>
     )
   }
 }
