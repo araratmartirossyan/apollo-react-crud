@@ -1,16 +1,26 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { func } from 'prop-types'
+import { usersQuery } from '../../graphql/UsersQuery'
 import userNewMutation from '../../graphql/UserAddMutation'
 import UsersForm from '../../components/UserForm'
 
 class UsersAdd extends Component {
-  render() {
-    const { submit } = this.props
+  handleSubmit = ({ userInput }) => {
+    const {
+      submit,
+      data: { refetch },
+      history: { push }
+    } = this.props
+    submit(userInput)
+      .then(() => refetch())
+      .then(() => push('/list'))
+  }
 
+  render() {
     return (
       <UsersForm
-        submit={submit}
+        submit={this.handleSubmit}
         isEditing={false}
       />
     )
@@ -26,9 +36,12 @@ UsersAdd.defaultProps = {
 }
 
 export default compose(
+  graphql(usersQuery, {
+    options: () => ({ fetchPolicy: 'cache-and-network' })
+  }),
   graphql(userNewMutation, {
     props: ({ mutate }) => ({
-      submit: ({ userInput }) =>
+      submit: userInput =>
         mutate({
           variables: userInput
         })

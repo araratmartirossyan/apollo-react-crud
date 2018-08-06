@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Table, Button } from 'react-bootstrap'
+import { array, func } from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import { tableHeading } from './users.mock'
@@ -16,8 +17,8 @@ export default class UsersTable extends Component {
     <td key={key}>{item}</td>
 
   render() {
-    const { users = [] } = this.props
-    console.log(this.props)
+    const { users } = this.props
+
     return (
       <Table responsive>
         <thead>
@@ -50,4 +51,14 @@ export default class UsersTable extends Component {
       </Table>
     )
   }
+}
+
+UsersTable.propTypes = {
+  users: array,
+  removeUser: func
+}
+
+UsersTable.defaultProps = {
+  users: [],
+  removeUser: () => {}
 }

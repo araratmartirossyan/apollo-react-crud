@@ -6,13 +6,21 @@ import { userQuery } from '../../graphql/UsersQuery'
 
 class UsersEdit extends Component {
   handleSubmit = values => {
-    const { submit, match: { params: { id } }} = this.props
+    const {
+      submit,
+      match: {
+        params: { id }
+      },
+      history: { push }
+    } = this.props
+
     submit(id, values)
-  } 
+      .then(() => push('/list'))
+  }
 
   render() {
     const { data: { User } } = this.props
-    console.log(this.props.match)
+
     return (
       <div>
         {User &&

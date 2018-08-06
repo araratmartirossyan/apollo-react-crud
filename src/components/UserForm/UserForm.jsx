@@ -6,6 +6,7 @@ import {
   FormControl,
   Button
 } from 'react-bootstrap'
+import { isEmpty } from 'ramda'
 import { convertingTypes } from '../../utils/convertingTypes'
 import { inputs } from './mock'
 
@@ -49,16 +50,18 @@ class UserForm extends Component {
     </FormGroup>
 
   render() {
+    const buttonText = isEmpty(this.props.user) ? 'Create' : 'Update'
+
     return (
       <form>
         {inputs.map(
           (item, key) => this.renderInput(item, key)
         )}
         <Button
-          bsStyle="success"
+          bsStyle='success'
           onClick={this.handleSubmit}
         > 
-          Create
+          {buttonText}
         </Button>
       </form>
     )
